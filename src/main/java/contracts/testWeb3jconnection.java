@@ -4,8 +4,6 @@ import org.web3j.protocol.Web3j;
 import org.web3j.protocol.core.methods.response.Web3ClientVersion;
 import org.web3j.protocol.http.HttpService;
 
-import java.util.concurrent.ExecutionException;
-
 public class testWeb3jconnection {
 
     public static void main(String[] args){

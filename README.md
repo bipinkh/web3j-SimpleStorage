@@ -4,7 +4,7 @@
 
  To compile Contract file and generate abi and bin files
 
->> solc <contract>.sol --bin --abi --optimize -o <output-dir>
+>> solc < contract >.sol --bin --abi --optimize -o <output-dir>
 
 
  To generate  wrapper class of the compiled contract files

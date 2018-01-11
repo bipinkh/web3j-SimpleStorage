@@ -12,26 +12,33 @@ import org.web3j.protocol.http.HttpService;
 
 public class loader {
 
-    public static String contractAddress = "0x937f9ca7c556fec7de2e71ea18daf89d4cce1004";
+    public static void main(String[] args){
+        loadSimpleStorage();
+    }
 
-    public static final String WEB3_URL = "https://rinkeby.infura.io/";
-    public static final String ADDRESS = "0x6440a960a36d9e30ce21c5c7f082873272399f70";
-    public static final String PRIVATE_KEY = "da932039e7457ebecb270c41d4770923c3bb44749b95b30a30508e1c78e427a1";
-    public static final BigInteger GAS_PRICE = BigInteger.valueOf(20_000_000_000L);
-    public static final BigInteger GAS_LIMIT = BigInteger.valueOf(100_000);
-    public static final BigInteger INITIAL_WEI_VALUE = BigInteger.valueOf(9_300_000);
+    /**
+     * loader for nepCurrency contract
+     * */
+    public  static void nepCurrency(){
 
-    public static void main(String[] args) {
+    }
+
+    /**
+     * loader for SimpleStorage contract
+     * */
+
+    public static void loadSimpleStorage() {
         System.out.println("Loading contract: SimpleStorage");
         // Get or create Web3j instance
-        Web3j web3j = Web3j.build(new HttpService(WEB3_URL));
+        Web3j web3j = Web3j.build(new HttpService(NodeConstants.WEB3_URL));
 
         // Get the node credentials
-        Credentials NODE = Credentials.create(PRIVATE_KEY);
+        Credentials NODE = Credentials.create(NodeConstants.PRIVATE_KEY);
 
         try {
             // deploy contract
-            SimpleStorage contract = SimpleStorage.load(contractAddress, web3j, NODE, GAS_PRICE, GAS_LIMIT);
+            SimpleStorage contract = SimpleStorage.load(NodeConstants.contractAddress_SimpleStorage, web3j, NODE,
+                    NodeConstants.GAS_PRICE_SimpleStorage, NodeConstants.GAS_LIMIT_SimpleStorage);
             // check if contract is valid
             assert contract.isValid();
             System.out.println("Contract Address:" + contract.getContractAddress());

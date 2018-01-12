@@ -91,6 +91,10 @@ public class loader {
         }
     }
 
+    /**
+     * loader for SetGetBC contract
+     * */
+
     public static void loadSetGetBC() {
         System.out.println("Loading contract: SetGetBC");
         // Get or create Web3j instance
@@ -101,8 +105,8 @@ public class loader {
 
         try {
             // deploy contract
-            contract_setget = SetGetBC.load(NodeConstants.contractAddress_SimpleStorage, web3j, NODE,
-                    NodeConstants.GAS_PRICE_SimpleStorage, NodeConstants.GAS_LIMIT_SimpleStorage);
+            contract_setget = SetGetBC.load(NodeConstants.contractAddress_SetGet, web3j, NODE,
+                    NodeConstants.GAS_PRICE_setget, NodeConstants.GAS_LIMIT_setget);
             // check if contract is valid
             assert contract_setget.isValid();
             System.out.println("Contract Address:" + contract_setget.getContractAddress());

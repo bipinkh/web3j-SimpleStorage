@@ -7,6 +7,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import contracts.wrapper.NepCurrency;
+import contracts.wrapper.SetGetBC;
 import contracts.wrapper.SimpleStorage;
 import org.web3j.crypto.Credentials;
 import org.web3j.protocol.Web3j;
@@ -18,7 +19,40 @@ public class deployer {
 
     public static void main(String[] args){
 //        deploySimpleStorage();
-        deployNepCurrency();
+//        deployNepCurrency();
+        deploySetGet();
+    }
+
+
+
+    public static void deploySetGet() {
+        System.out.println("Deploying contract: SetGetContract");
+
+        // Get or create Web3j instance
+        Web3j web3j = Web3j.build(new HttpService(WEB3_URL));
+
+        // Get the node credentials
+        Credentials NODE = Credentials.create(NodeConstants.PRIVATE_KEY);
+
+        try {
+            // deploy contract
+            SetGetBC contract = SetGetBC.deploy(web3j, NODE,
+                    NodeConstants.GAS_PRICE_nepCurrency, NodeConstants.GAS_LIMIT_nepCurrency).send();
+
+            // check if contract is valid
+            assert contract.isValid();
+
+            // print the contract address
+            System.out.println("Contract Address:" + contract.getContractAddress());
+        } catch (InterruptedException ex) {
+            Logger.getLogger(deployer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ExecutionException ex) {
+            Logger.getLogger(deployer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(deployer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(deployer.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
@@ -28,7 +62,6 @@ public class deployer {
      *      @param symbol    String
      *      @param notary    String
      */
-
     public static void deployNepCurrency() {
         System.out.println("Deploying contract: NepCurrency");
 

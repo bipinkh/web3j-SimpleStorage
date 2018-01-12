@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import contracts.wrapper.NepCurrency;
+import contracts.wrapper.SetGetBC;
 import contracts.wrapper.SimpleStorage;
 import org.bouncycastle.pqc.math.linearalgebra.ByteUtils;
 import org.web3j.crypto.Credentials;
@@ -15,22 +16,31 @@ import org.web3j.protocol.http.HttpService;
 import services.SignatureService;
 
 public class loader {
+    static NepCurrency contract_nepcurrency = null;
+    static SimpleStorage contract_simplestorage = null;
+    static SetGetBC contract_setget = null;
 
-    public static void main(String[] args){
-//        loadSimpleStorage();
-        loadNepCurrency();
+
+    public static NepCurrency getNepCurrencyContract(){
+        if (contract_nepcurrency == null)
+            loadNepCurrency();
+        return contract_nepcurrency;
+    }
+    public static SimpleStorage getSimpleStorageContract(){
+        if (contract_simplestorage == null)
+            loadSimpleStorage();
+        return contract_simplestorage;
+    }
+    public static SetGetBC getSetGetContract(){
+        if (contract_setget == null)
+            loadSetGetBC();
+        return contract_setget;
     }
 
     /**
      * loader for nepCurrency contract
      * */
     public  static void loadNepCurrency(){
-
-        ECKeyPair kp = ECKeyPair.create(new BigInteger(NodeConstants.PRIVATE_KEY_NOTARY, 16));
-        String _minter = new String("0x583031d1113ad414f02576bd6afabfb302140225");
-        BigInteger _balance = BigInteger.valueOf(100000); //1 thousand
-        String _message = "some random shit";
-        SignatureService.SignatureData signature = SignatureService.signMessage(_message.getBytes(), kp);
 
         System.out.println("Loading contract: NepCurrency");
         // Get or create Web3j instance
@@ -41,24 +51,11 @@ public class loader {
 
         try {
             // load contract
-            NepCurrency contract = NepCurrency.load(NodeConstants.contractAddress_nepCurrency, web3j, NODE,
+            contract_nepcurrency = NepCurrency.load(NodeConstants.contractAddress_nepCurrency, web3j, NODE,
                     NodeConstants.GAS_PRICE_nepCurrency, NodeConstants.GAS_LIMIT_nepCurrency);
             // check if contract is valid
-            assert contract.isValid();
-            System.out.println("Contract Address:" + contract.getContractAddress());
-
-            BigInteger value = contract.balanceOf(NodeConstants.PUBLIC_KEY).send();
-            System.out.println("Value:"+value);
-
-            //mint some coins
-//            contract.mint(_minter,_balance,_message.getBytes(),
-//                    BigInteger.valueOf(signature.getV()), signature.getR(), signature.getS() )
-//                    .observable()
-//                    .subscribe(x -> {
-//                                System.out.println("Tx Hash:" + x.getTransactionHash());
-//                                RemoteCall<BigInteger> value = contract.balanceOf(NodeConstants.PUBLIC_KEY);
-//                                System.out.println("Value:"+value);
-//                            });
+            assert contract_nepcurrency.isValid();
+            System.out.println("Contract Address:" + contract_nepcurrency.getContractAddress());
 
         } catch (IOException ex) {
             Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
@@ -81,24 +78,34 @@ public class loader {
 
         try {
             // deploy contract
-            SimpleStorage contract = SimpleStorage.load(NodeConstants.contractAddress_SimpleStorage, web3j, NODE,
+            contract_simplestorage = SimpleStorage.load(NodeConstants.contractAddress_SimpleStorage, web3j, NODE,
                     NodeConstants.GAS_PRICE_SimpleStorage, NodeConstants.GAS_LIMIT_SimpleStorage);
             // check if contract is valid
-            assert contract.isValid();
-            System.out.println("Contract Address:" + contract.getContractAddress());
+            assert contract_simplestorage.isValid();
+            System.out.println("Contract Address:" + contract_simplestorage.getContractAddress());
 
-            contract.set(new BigInteger("12345678"))
-                    .observable()
-                    .subscribe(x -> {
-                        System.out.println("Tx Hash:" + x.getTransactionHash());
-                        try {
-                            // Read set value
-                            BigInteger value = contract.get().send();
-                            System.out.println("Value:"+value);
-                        } catch (Exception ex) {
-                            Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
-                        }
-                    });
+        } catch (IOException ex) {
+            Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (Exception ex) {
+            Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
+    public static void loadSetGetBC() {
+        System.out.println("Loading contract: SetGetBC");
+        // Get or create Web3j instance
+        Web3j web3j = Web3j.build(new HttpService(NodeConstants.WEB3_URL));
+
+        // Get the node credentials
+        Credentials NODE = Credentials.create(NodeConstants.PRIVATE_KEY);
+
+        try {
+            // deploy contract
+            contract_setget = SetGetBC.load(NodeConstants.contractAddress_SimpleStorage, web3j, NODE,
+                    NodeConstants.GAS_PRICE_SimpleStorage, NodeConstants.GAS_LIMIT_SimpleStorage);
+            // check if contract is valid
+            assert contract_setget.isValid();
+            System.out.println("Contract Address:" + contract_setget.getContractAddress());
 
         } catch (IOException ex) {
             Logger.getLogger(loader.class.getName()).log(Level.SEVERE, null, ex);

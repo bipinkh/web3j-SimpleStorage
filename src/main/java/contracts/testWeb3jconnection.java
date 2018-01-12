@@ -7,7 +7,7 @@ import org.web3j.protocol.http.HttpService;
 public class testWeb3jconnection {
 
     public static void main(String[] args){
-        Web3j web3j = Web3j.build(new HttpService());
+        Web3j web3j = Web3j.build(new HttpService(NodeConstants.WEB3_URL));
         try {
             Web3ClientVersion clientVersion = web3j.web3ClientVersion().sendAsync().get();
             System.out.println("Client version :: "+clientVersion.getWeb3ClientVersion());
